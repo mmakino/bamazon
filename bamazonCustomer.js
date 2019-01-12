@@ -6,21 +6,18 @@ Bamazon -- Amazon-like store front app with a command-line interface
 */
 'use strict';
 
-require('console.tablefy');
+const BamazonStore = require('./bamazonStore');
 const printf = require('printf');
 
 //
-// A class for Bamazon store
+// A class for Bamazon Customer store purchase processing
 //
-class BamazonStore {
+class BamazonCustomer extends BamazonStore {
   //
   // Constructor
   // 
   constructor() {
-    this.mysql = require('mysql');            // mysql module variable
-    this.inquirer = require('inquirer');      // inquirer binding variable
-    this.config = require('./mysql_config');  // MySQL connection parameters
-    this.connection = null;                   // MySQL connection
+    super();
   }
   
   //
@@ -29,10 +26,8 @@ class BamazonStore {
   // NOTE: the "error" variable is shadowed in nested branches
   //
   run() {
-    console.log("HERE 1");
     if (!this.connectToBamazon()) return;
 
-    console.log("HERE 2");
     this.listProducts().then((results, error) => {
       if (error) throw error;
 
@@ -56,7 +51,7 @@ class BamazonStore {
                 if (isSuccess) {
                   this.productPrice(answers.id).then((price, error) => {
                     if (error) throw error4;
-                    console.log(`Order Total: $${price * answers.qty}`);
+                    console.log(`Order Total: $${(price * answers.qty).toFixed(2)}`);
                     this.closeConnection();
                   });
                 }
@@ -73,46 +68,13 @@ class BamazonStore {
   }
 
   //
-  // Connect to "bamazon" database
-  //
-  connectToBamazon() {
-    this.connection = this.mysql.createConnection(this.config);
-
-    this.connection.connect(function(err) {
-      if (err) {
-        console.error('error connecting: ' + err.stack);
-        return false;
-      }
-    });
-    
-    return true;
-  }
-
-  //
-  // Generic query function to return result as a Promise
-  //
-  // RETURN:
-  // * Promise
-  //     resolve = query results from mysql api
-  //     reject  = error msg
-  //
-  query(stmt, ...placeholders) {
-    return new Promise((resolve, reject) => {
-      this.connection.query(stmt, placeholders, (error, results, fields) => {
-        if (error) reject(error);
-        resolve(results);
-      });
-    });
-  }
-
-  //
   // List products from the "products" table
   //
   // Returns only the following columns:
   // 1)ID, 2)Product Name, and 3)Price
   //
   // RETURN:
-  // * Promise -- see the "query" function of this class
+  // * Promise -- see the "query" function of BamazonStore class
   //
   listProducts() {
     const stmt = `
@@ -161,92 +123,16 @@ class BamazonStore {
         .catch(error => reject(error));
     });
   }
-
-  //
-  // Returns available quantities for the productID
-  //
-  // RETURN:
-  // * Promise
-  //     resolve = query results from mysql api
-  //     reject  = error msg
-  //
-  numProductsInStock(productID) {
-    const stmt = `
-      SELECT stock_quantity 
-      FROM   products
-      WHERE  item_id = ?`;
-
-    return new Promise((resolve, reject) => {
-      this.query(stmt, productID).then((result, error) => {
-        if (error) reject(error);
-        resolve(result[0].stock_quantity);
-      }).catch(error => reject(error));
-    });
-  }
-  
-  //
-  // Returns price of a specified productID
-  //
-  // RETURN:
-  // * Promise
-  //     resolve = the product price
-  //     reject  = error msg
-  //
-  productPrice(productID) {
-    const stmt = `
-      SELECT price 
-      FROM   products
-      WHERE  item_id = ?`;
-
-    return new Promise((resolve, reject) => {
-      this.query(stmt, productID).then((result, error) => {
-        if (error) reject(error);
-        resolve(result[0].price);
-      }).catch(error => reject(error));
-    });
-  }
-
-  //
-  // Update the number of available quantities for the productID
-  //
-  // RETURN:
-  // * Promise
-  //     resolve = true, if update has been successful
-  //               false, otherwise
-  //     reject  = error msg
-  //
-  updateProdQty(productID, newQty) {
-    const stmt = `
-      UPDATE products
-      SET    stock_quantity = ?
-      WHERE  item_id = ?`;
-
-    // console.log(stmt, productID, newQty);
-    return new Promise((resolve, reject) => {
-      this.query(stmt, newQty, productID).then((result, error) => {
-        if (error) reject(error);
-        resolve(result.changedRows === 1);
-      }).catch(error => reject(error));
-    });
-  }
-
-  //
-  // End connection to the bamazon database
-  //
-  closeConnection() {
-    this.connection.end();
-  }
 }
 
 //
 // A driver function for the Bamazon store front
 //
-// NOTE: the "error" variable is shadowed in nested branches
-//
-function runStore() {
-  const store = new BamazonStore;
-  store.run();
+function runStoreFront() {
+  const customer = new BamazonCustomer;
+  customer.run();
 }
 
 /*** run the store ***/
-runStore();
+runStoreFront();
+
