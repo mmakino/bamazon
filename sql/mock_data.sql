@@ -1,9 +1,19 @@
+
 use bamazon;
+
+drop table if exists products;
+create table products(
+	item_id INT NOT NULL auto_increment PRIMARY KEY,
+    product_name varchar(256),
+    department_name varchar(128),
+    price decimal(6,2),
+    stock_quantity int(5)
+);
 
 insert into products
 	(product_name, department_name, price, stock_quantity)
     values(
-		'Magic Chef MCAR320B2 All Refrigerator, 3.2 cu.ft, Black',
+		'Magic Chef Refrigerator',
 		'Appliances',
         135.79,
         11
@@ -12,7 +22,7 @@ insert into products
 insert into products
 	(product_name, department_name, price, stock_quantity)
     values(
-		'Toshiba EM131A5C-BS Microwave Oven with Smart Sensor, Easy Clean Interior, ECO Mode and Sound On/Off, 1.2 Cu.ft, 1100W, Black Stainless Steel',
+		'Toshiba Microwave Oven',
         'Appliances',
         112.69,
         22
@@ -21,7 +31,7 @@ insert into products
 insert into products
 	(product_name, department_name, price, stock_quantity)
     values(
-		'Cuisinart CPT-180 Metal Classic 4-Slice Toaster, Brushed Stainless',
+		'Cuisinart Classic 4-Slice Toaster',
 		'Home & Kitchen',
         49.99,
         33
@@ -30,7 +40,7 @@ insert into products
 insert into products
 	(product_name, department_name, price, stock_quantity)
     values(
-		'Salt, Fat, Acid, Heat: Mastering the Elements of Good Cooking',
+		'Mastering the Elements of Good Cooking',
 		'Books',
         23.46,
         100
@@ -75,7 +85,7 @@ insert into products
 insert into products
 	(product_name, department_name, price, stock_quantity)
     values(
-		'Pokemon Cards POK16CHAREXBX TCG: Charizard-EX Box Fire Blast Card Game, Multicolor',
+		'Charizard-EX Box Fire Blast Card Game',
 		'Toys & Games',
         16.70,
         37

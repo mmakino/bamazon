@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------
-Bamazon -- Amazon-like store front app with a command-line interface
+Bamazon -- Amazon-like storefront app with a command-line interface
            using mySQL in the backend.
 
 Manager View with the following operation options:
@@ -100,6 +100,7 @@ class BamazonManager extends BamazonStore {
             this.addNewProduct();
             break;
         }
+        // this.managerMenu();
       });
       
     return true;

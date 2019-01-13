@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------
-Bamazon -- Amazon-like store front app with a command-line interface
+Bamazon -- Amazon-like storefront app with a command-line interface
            using mySQL in the backend.
 ----------------------------------------------------------------------------
 */
